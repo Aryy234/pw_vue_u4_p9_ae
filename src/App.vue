@@ -1,7 +1,13 @@
 <template>
   <nav>
     <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/about">About</router-link> |
+    <router-link to="/estudiantes/consultar-todos">Consultar Todos</router-link> |
+    <router-link to="/estudiantes/consultar-por-id">Consultar por ID</router-link> |
+    <router-link to="/estudiantes/guardar">Guardar</router-link> |
+    <router-link to="/estudiantes/actualizar">Actualizar</router-link> |
+    <router-link to="/estudiantes/actualizar-parcial">Actualizar Parcial</router-link> |
+    <router-link to="/estudiantes/borrar">Borrar</router-link>
   </nav>
   <router-view/>
 </template>
