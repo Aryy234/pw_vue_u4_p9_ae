@@ -1,88 +1,31 @@
 <template>
-  <div class="login-container">
-    <div class="login-card">
-      <h2>Iniciar Sesión</h2>
-      
-      <form @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="username">Usuario:</label>
-          <input
-            id="username"
-            v-model="credentials.username"
-            type="text"
-            placeholder="Ingresa tu usuario"
-            required
-            :disabled="authLoading"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="password">Contraseña:</label>
-          <input
-            id="password"
-            v-model="credentials.password"
-            type="password"
-            placeholder="Ingresa tu contraseña"
-            required
-            :disabled="authLoading"
-          />
-        </div>
-
-        <div v-if="authError" class="error-message">
-          {{ authError }}
-        </div>
-
-        <button 
-          type="submit" 
-          class="login-button"
-          :disabled="authLoading || !isFormValid"
-        >
-          {{ authLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
-        </button>
-      </form>
-    </div>
-  </div>
+  <Login :loading="authLoading" :error="authError" @submit="handleLogin" />
 </template>
 
 <script>
-import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
+import Login from '@/components/Login.vue';
 
 export default {
   name: 'LoginView',
+  components: { Login },
   setup() {
     const router = useRouter();
     const { login, loading: authLoading, error: authError } = useAuth();
-    
-    const credentials = ref({
-      username: '',
-      password: ''
-    });
 
-    const isFormValid = computed(() => {
-      return credentials.value.username.trim() !== '' && 
-             credentials.value.password.trim() !== '';
-    });
+    const handleLogin = async (credentials) => {
+      const result = await login(credentials.username, credentials.password);
 
-    const handleLogin = async () => {
-      const result = await login(
-        credentials.value.username,
-        credentials.value.password
-      );
-
-      if (result.success) {
-        // Redirigir al home o a la ruta que intentaba acceder
+      if (result && result.success) {
         const redirectTo = router.currentRoute.value.query.redirect || '/';
         router.push(redirectTo);
       }
     };
 
     return {
-      credentials,
       authLoading,
       authError,
-      isFormValid,
       handleLogin
     };
   }
